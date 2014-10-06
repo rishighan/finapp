@@ -15,7 +15,6 @@
     jade         = require('jade')
 
     // configuration =================
-
     mongoose.connect('mongodb://node:node@mongo.onmodulus.net:27017/uwO3mypu');     // connect to mongoDB database on modulus.io
 
     app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
@@ -24,8 +23,13 @@
     app.use(bodyParser.json());                                     // parse application/json
     app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
     app.use(methodOverride());
+    // from the old app
+    app.use(express.cookieParser('brad'))
+    app.use(express.session({secret: 'smith'}));
+    app.use(app.router)
 
-    // listen (start app with node server.js) ======================================
+    // startup =================
+    // listen (start app with node server.js)
     app.listen(8080);
     console.log("App listening on port 8080");
 
