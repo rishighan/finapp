@@ -4,6 +4,16 @@ block mainContent
   h1!= reportname
   h2!= daterange
 
+  form
+    div.checkbox
+      label
+        input(type="checkbox", value="Paid")
+        h5= "Paid"
+    div.checkbox
+      label
+        input(type="checkbox", value="Unpaid")
+        h5= "Unpaid"
+
   //Columns
   table(class="table table-striped")
     tr
@@ -11,6 +21,9 @@ block mainContent
       each col in column
         td
           h5!= col["ColTitle"]
+    td
+      h5!= "Identifier"
+
     // First loop returns total number of records
     // for our API call
     each cell, idx in rowsperclient.Row
@@ -18,6 +31,7 @@ block mainContent
         tr
           td(colspan=7 class="info")
             h4= rowsperclient.Row[idx].Header.ColData[0].value
+
 
         // This here loop gives us the total number of total ColData values
         // The last index in this loop is the Summary.
@@ -27,7 +41,11 @@ block mainContent
               td
                 h5= rowsperclient.Row[idx].Rows.Row[key].ColData[key2].value
             td
-              h5= "custom column"
+              //create a custom identifier for the column
+              //alphanumeric for now, todo: make a better Identifier.
+              - var identifier =  rowsperclient.Row[idx].Rows.Row[key].ColData[2].value
+              - var year = rowsperclient.Row[idx].Rows.Row[key].ColData[0].value.split('/')
+              h5= identifier.replace(/[^\w]/gi, '')
 
         // This here loop is for getting the summary.
         // First level loops over the summary object in each row
