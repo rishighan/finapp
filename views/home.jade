@@ -1,0 +1,39 @@
+extends site_layout
+
+block mainContent
+  h1!= reportname
+  h2!= daterange
+
+  //Columns
+  table(class="table table-striped")
+    tr
+    each column in columns
+      each col in column
+        td
+          h5!= col["ColTitle"]
+    // First loop returns total number of records
+    // for our API call
+    each cell, idx in rowsperclient.Row
+      if idx < rowsperclient.Row.length-1
+        tr
+          td(colspan=7 class="info")
+            h4= rowsperclient.Row[idx].Header.ColData[0].value
+
+        // This here loop gives us the total number of total ColData values
+        // The last index in this loop is the Summary.
+        each value, key in rowsperclient.Row[idx].Rows.Row
+          tr
+            each colvalue, key2 in rowsperclient.Row[idx].Rows.Row[key].ColData
+              td
+                h5= rowsperclient.Row[idx].Rows.Row[key].ColData[key2].value
+
+        // This here loop is for getting the summary.
+        // First level loops over the summary object in each row
+        // Second level loops over each value inside the summary object
+        each summary, key3 in rowsperclient.Row[idx].Summary
+          each col, key4 in summary
+            td(class="success")
+              //h5= key4
+              h5=rowsperclient.Row[idx].Summary.ColData[key4].value
+
+
