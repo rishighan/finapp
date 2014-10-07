@@ -95,11 +95,11 @@ app.get('/callback', function(req, res) {
 
 })
 
-   app.get('/home', express.bodyParser(), function(req, res){
+   app.get('/vendorbalancedetail', express.bodyParser(), function(req, res){
       qbo.reportVendorBalanceDetail({date_macro:'This Month-to-date', appaid: 'Unpaid'},function(_,report){
 
       //console.log(report)
-      res.render('home.jade', {title: "Report Detail",
+      res.render('vendorbalancedetail.jade', {title: "Report Detail",
                               reportname: report["Header"]['ReportName'],
                               daterange: "From:"+report["Header"]["StartPeriod"]+" to: "+report["Header"]["EndPeriod"],
                               alldata: report,
@@ -109,6 +109,23 @@ app.get('/callback', function(req, res) {
       })
 
     })
+
+   app.get('/profitandlossdetail', express.bodyParser(), function(req,res){
+    qbo.reportProfitAndLossDetail({date_macro:'This Month-to-date',
+                                   sort_order: 'descend',
+                                   account_type: 'FixedAsset'}, function(_, report){
+    console.log(report);
+    res.render('profitandlossdetail.jade', {
+        title: "Profit and Loss Detail",
+        reportname: report["Header"]["ReportName"],
+        daterange: "From: "+ report["Header"]["StartPeriod"]+ " to: "+ report["Header"]["EndPeriod"],
+        columns: report["Columns"],
+        rows: report["Rows"]
+    })
+
+    })
+
+   })
 
 })
 

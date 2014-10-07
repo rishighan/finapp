@@ -1,0 +1,12 @@
+extends site_layout
+
+block mainContent
+  h1!= reportname
+  h2!= daterange
+
+  //Columns
+  table(class="table table-striped")
+    tr
+      each colt in columns["Column"]
+        td
+          h5= colt["ColTitle"]

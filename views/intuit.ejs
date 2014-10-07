@@ -1,6 +1,7 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ipp="">
-<head><meta http-equiv="Content-Type"
-            content="text/html; charset=ISO-8859-1">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
   <title>QBO Connect</title>
   <script type="text/javascript" src="https://appcenter.intuit.com/Content/IA/intuit.ipp.anywhere.js">
   </script>
@@ -10,9 +11,20 @@
       grantUrl: 'http://localhost:' + <%= port %> + '/requestToken'
     });
   </script>
+<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
 </head>
 <body>
+<div class="container">
 <ipp:connectToIntuit></ipp:connectToIntuit>
-<a href="/home">Home</a>
+
+<ul class="muted">
+  <h2>Reports</h2>
+  <li><a href="/vendorbalancedetail">Vendor Balance Detail</a></li>
+  <li><a href="/profitandlossdetail">Profit and Loss Detail</a></li>
+
+
+</ul>
+
+</div>
 </body>
 </html>
