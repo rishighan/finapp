@@ -26,6 +26,8 @@ block mainContent
             each colvalue, key2 in rowsperclient.Row[idx].Rows.Row[key].ColData
               td
                 h5= rowsperclient.Row[idx].Rows.Row[key].ColData[key2].value
+            td
+              h5= "custom column"
 
         // This here loop is for getting the summary.
         // First level loops over the summary object in each row

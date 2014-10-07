@@ -113,7 +113,7 @@ app.get('/callback', function(req, res) {
    app.get('/profitandlossdetail', express.bodyParser(), function(req,res){
     qbo.reportProfitAndLossDetail({date_macro:'This Month-to-date',
                                    sort_order: 'descend',
-                                   account_type: 'FixedAsset'}, function(_, report){
+                                   account_type: 'Bank'}, function(_, report){
     console.log(report);
     res.render('profitandlossdetail.jade', {
         title: "Profit and Loss Detail",
