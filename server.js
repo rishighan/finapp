@@ -14,7 +14,8 @@
     qs           = require('querystring'),
     util         = require('util'),
     QuickBooks   = require('node-quickbooks'),
-    jade         = require('jade')
+    jade         = require('jade'),
+    database     = require('./config/database.js')
 
     // configuration =================
     // connect to mongoDB database on modulus.io
@@ -37,7 +38,7 @@
     console.log("App listening on port 8080");
 
 // DATABASE connection
-  mongoose.connect('mongodb://node:node@mongo.onmodulus.net:27017/uwO3mypu');
+  mongoose.connect(database.url);
   var db = mongoose.connection;
   db.on('error', console.error.bind(console, 'Connection error:'));
   db.once('open', function callback(){

@@ -1,6 +1,6 @@
 // ROUTES
 
-var creds = require('../app.js');
+var creds = require('../config/app.js');
 
 //expose these routes to our app
 module.exports = function(app, port, QuickBooks, request, qs, express){
@@ -11,7 +11,6 @@ app.get('/start', function(req, res) {
 })
 
 app.get('/requestToken', function(req, res) {
-console.log(creds.consumerKey)
   var postBody = {
     url: QuickBooks.REQUEST_TOKEN_URL,
     oauth: {
