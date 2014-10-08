@@ -45,4 +45,4 @@
   })
 
 
-require('./app/routes')(app,port, QuickBooks, request,qs, express);
+require('./app/routes')(app,port, QuickBooks, request,qs, express, db);

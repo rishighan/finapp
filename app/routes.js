@@ -5,7 +5,7 @@ var creds       = require('../config/app.js'),
     db          = require('../config/database.js');
 
 //expose these routes to our app
-module.exports = function(app, port, QuickBooks, request, qs, express){
+module.exports = function(app, port, QuickBooks, request, qs, express, db){
 
 // Connect to QB online API
 // 1. Define the route for initiating the connection
@@ -79,10 +79,9 @@ app.get('/vbdetail/write', express.bodyParser(), function(req,res){
   qbo.reportVendorBalanceDetail({date_macro:'This Month-to-date', appaid: 'Unpaid'},function(_,report){
 
     // database connection
-    var findb = mongoose.connect(db.url);
-    // and save the JSON as a collection
-    console.log(findb)
-    //findb.collection.save(report);
+   // and save the JSON as a collection
+   console.log(db);
+   db.collection.save(report);
 
 
   })
