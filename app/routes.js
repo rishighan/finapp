@@ -1,11 +1,18 @@
 // ROUTES
 
-var creds = require('../config/app.js');
+var creds       = require('../config/app.js'),
+    mongoose    = require('mongoose'),
+    db          = require('../config/database.js');
 
 //expose these routes to our app
 module.exports = function(app, port, QuickBooks, request, qs, express){
 
 // Connect to QB online API
+// 1. Define the route for initiating the connection
+// 2. Upon successful authorization, get the token and the token secret, close the Auth window
+// 3. Callback route. Supply consumer key, consumer secret, token, token secret and initiate the QB object
+// 4. Now you have access to the QB object, so call the endpoints and profit.
+
 app.get('/start', function(req, res) {
   res.render('intuit.ejs', {locals: {port:port}})
 })
@@ -63,6 +70,29 @@ app.get('/callback', function(req, res) {
     res.send('<html><body><script>window.close()</script>')
 
 })
+
+
+// to save the api response to mongo
+app.get('/vbdetail/write', express.bodyParser(), function(req,res){
+
+  //make the api call
+  qbo.reportVendorBalanceDetail({date_macro:'This Month-to-date', appaid: 'Unpaid'},function(_,report){
+
+    // database connection
+    var findb = mongoose.connect(db.url);
+    // and save the JSON as a collection
+    console.log(findb)
+    //findb.collection.save(report);
+
+
+  })
+
+
+
+
+})
+
+
 
 app.get('/vendorbalancedetail', express.bodyParser(), function(req, res){
     qbo.reportVendorBalanceDetail({date_macro:'This Month-to-date', appaid: 'Unpaid'},function(_,report){
