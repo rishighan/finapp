@@ -81,17 +81,16 @@ app.get('/vbdetail/write', express.bodyParser(), function(req,res){
 
     // database connection
    // and save the JSON as a collection
-   var joom = new vbDetail(),
-
-       companies = report["Rows"]["Row"].length-1,
 
 
+       var companies = report["Rows"]["Row"].length-1;
+       for(var i=0; i<companies; i++){
+        var newCompany = new vbDetail({company_name: report["Rows"]["Row"][i]["Header"]["ColData"][0]["value"]});
+        newCompany.save(function(err){
+            console.log(newCompany._id)
+        })
+       }
 
-   joom.save(function(err, vbDetail){
-    if(err) return console.error(err);
-    //console.dir(vbDetail);
-
-   })
 
 
   })
