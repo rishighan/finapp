@@ -2,15 +2,19 @@ var mongoose = require('mongoose');
 
 
 module.exports = mongoose.model('vbDetail', {
-    date: Date,
+
     company_name: String,
-    transaction_type: String,
-    transaction_num: String,
-    due_date: Date,
-    amount: Number,
-    open_balance: Number,
-    balance: Number,
-    identifier: String,
-    forecasted_date: Date,
-    notes: String
+    row:{
+        date: Date,
+        transaction_type: String,
+        transaction_num: String,
+        due_date: Date,
+        amount: Number,
+        open_balance: Number,
+        balance: Number,
+        identifier: String,
+        processing_date: Date,
+        processing_amount :Date,
+        notes: String
+    }
 })

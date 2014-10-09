@@ -2,6 +2,7 @@
 
 var creds       = require('../config/app.js'),
     mongoose    = require('mongoose'),
+    vbDetail    = require('../app/models/vendorbalancedetail.js'),
     db          = require('../config/database.js');
 
 //expose these routes to our app
@@ -80,8 +81,17 @@ app.get('/vbdetail/write', express.bodyParser(), function(req,res){
 
     // database connection
    // and save the JSON as a collection
-   console.log(db);
-   db.collection.save(report);
+   var joom = new vbDetail(),
+
+       companies = report["Rows"]["Row"].length-1,
+
+
+
+   joom.save(function(err, vbDetail){
+    if(err) return console.error(err);
+    //console.dir(vbDetail);
+
+   })
 
 
   })
