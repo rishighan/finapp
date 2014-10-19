@@ -88,20 +88,25 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
 
                 // database connection
                 // and save the JSON as a collection
-                var companies = report["Rows"]["Row"].length - 1;
+                // Save the entire response to mongo
+                var companies = report["Rows"]["Row"].length - 1,
+                    dataRows  = report["Rows"].length;
+                
                 // save company name
-                for (var i = 0; i < companies; i++) {
+                for (var i = 0; i<companies; i++) {
                     var newCompany = new vbDetail({
-                        company_name: report["Rows"]["Row"][i]["Header"]["ColData"][0]["value"]
+                        company_name: report["Rows"]["Row"][i]["Header"]["ColData"][0]["value"],
+                        rows:         {
+                            date: report["Rows"]["Row"][i]["Rows"]["Row"][0]["ColData"][0]["value"]
+                        }
                     });
 
-                //
-
-
+                                 
+                // Error handling    
                     newCompany.save(function(err) {
-                        console.log(newCompany._id)
+                        console.log(newCompany)
                     })
-                }
+                }//endfor
 
 
 
