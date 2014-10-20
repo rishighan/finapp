@@ -3,7 +3,8 @@
 var creds = require('../config/app.js'),
     mongoose = require('mongoose'),
     vbDetail = require('../app/models/vendorbalancedetail.js'),
-    db = require('../config/database.js');
+    db = require('../config/database.js'),
+    async = require('async.js')
 
 //expose these routes to our app
 module.exports = function(app, port, QuickBooks, request, qs, express, db) {
