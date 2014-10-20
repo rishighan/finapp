@@ -3,6 +3,7 @@ extends site_layout
 block mainContent
   h1!= reportname
   h2!= daterange
+ 
 
   form.horizontal
     h3!= "Controls"
@@ -18,7 +19,7 @@ block mainContent
           = "Unpaid"
   p
     button(type="button", class="btn btn-info clearfix")= "Sync with Quickbooks"
-    button(type="button", class="btn btn-info")= "Save to database"
+    button(type="button", class="btn btn-info" action="/vbdetail/write")= "Save all JSON to DB"
     button(type="button", class="btn btn-warning")= "Wipe and re-import"
 
   //Columns

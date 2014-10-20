@@ -86,27 +86,35 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
                 appaid: 'Unpaid'
             }, function(_, report) {
 
-                // database connection
-                // and save the JSON as a collection
-                // Save the entire response to mongo
-                var companies = report["Rows"]["Row"].length - 1,
-                    dataRows  = report["Rows"].length;
-                
-                // save company name
-                for (var i = 0; i<companies; i++) {
-                    var newCompany = new vbDetail({
-                        company_name: report["Rows"]["Row"][i]["Header"]["ColData"][0]["value"],
-                        rows:         {
-                            date: report["Rows"]["Row"][i]["Rows"]["Row"][0]["ColData"][0]["value"]
-                        }
-                    });
+               // Save the response selectively.
+               var companies = report.Rows.Row.length-1,
+                   vbd       = new vbDetail();
 
-                                 
-                // Error handling    
-                    newCompany.save(function(err) {
-                        console.log(newCompany)
+                res.render('result.jade', {
+                    importStatus: "Companies:"+ companies +" and total Rows:" + rows,
+                    importError: ""
+                })   
+            
+                //test
+                for(var i=0; i < companies-1; i++){
+                    vbd.company_name = report.Rows.Row[i].Header.ColData[0].value;
+
+
+
+                    vbd.save(function(err){
+                        if(err) throw err;
                     })
-                }//endfor
+                }
+
+               // Save the entire JSON response to the DB
+               /*db.collection('tester').save(report.Rows, function(err, recs){
+                    if(err) throw err;
+                    console.log("Saved the JSON response from the API.");
+                    res.render('result.jade',{
+                        importStatus: "Successfully wrote JSON to the database.",
+                        importError: err
+                    })
+               })*/
 
 
 
