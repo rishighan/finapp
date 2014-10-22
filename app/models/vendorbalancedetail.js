@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 module.exports = mongoose.model('vbDetail', {
 
     company_name: String,
-    rows:{
+    rows:[{
         date: Date,
         transaction_type: String,
         transaction_num: String,
@@ -16,5 +16,5 @@ module.exports = mongoose.model('vbDetail', {
         processing_date: Date,
         processing_amount :Date,
         notes: String
-    }
+    }]
 })
