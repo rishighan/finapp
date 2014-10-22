@@ -98,19 +98,24 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
 
                 //test
                 for(var row in report["Rows"]["Row"]){
-
                     while(count < companies){
                         //console.log(report.Rows.Row[count].Header.ColData[0].value);
-                        var vbd = new vbDetail({company_name:report.Rows.Row[count].Header.ColData[0].value});
+                         // save the rows corresponding to each client
+                         for(var rowdata in report.Rows.Row[count].Rows.Row){
+                            for(var coldata in report.Rows.Row[count].Rows.Row[rowdata].ColData){
+                               var vbd = new vbDetail({
+                                    company_name: report.Rows.Row[count].Header.ColData[0].value,
+                                    rowsdata: report.Rows.Row[count].Rows.Row[rowdata].ColData[coldata].value
+
+                                });
+                                }
+                            }
+
+
                         vbd.save(function(err){
                             if(err) console.log(err);
                         })
-                            // save the rows corresponding to each client
-                            for(var rowdata in report.Rows.Row[count].Rows.Row){
-                                for(var coldata in report.Rows.Row[count].Rows.Row[rowdata].ColData){
-                                    for(var colvalue in Row[count].Rows.Row[key].ColData[key2].value)
-                                }
-                            }
+
                        count++;
                     }
 

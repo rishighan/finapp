@@ -3,7 +3,7 @@ extends site_layout
 block mainContent
   h1!= reportname
   h2!= daterange
- 
+
 
   form.horizontal
     h3!= "Controls"
@@ -37,7 +37,7 @@ block mainContent
       h5!= "Processing Amount"
     td
       h5!= "Processing Date"
-      
+
     // First loop returns total number of records
     // for our API call
     each cell, idx in rowsperclient.Row
