@@ -4,7 +4,7 @@ var creds = require('../config/app.js'),
     mongoose = require('mongoose'),
     vbDetail = require('../app/models/vendorbalancedetail.js'),
     db = require('../config/database.js'),
-    async = require('async.js')
+    async = require('async')
 
 //expose these routes to our app
 module.exports = function(app, port, QuickBooks, request, qs, express, db) {
@@ -89,23 +89,22 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
 
                // Save the response selectively.
                var companies = report.Rows.Row.length-1,
-                   vbd       = new vbDetail();
+                   count     = 0;
 
                 res.render('result.jade', {
-                    importStatus: "Companies:"+ companies +" and total Rows:" + rows,
+                    importStatus: "Companies:"+ companies,
                     importError: ""
-                })   
-            
+                })
+
                 //test
-                for(var i=0; i < companies-1; i++){
-                    vbd.company_name = report.Rows.Row[i].Header.ColData[0].value;
+                for(var row in report["Rows"]["Row"]){
 
-
-
-                    vbd.save(function(err){
-                        if(err) throw err;
-                    })
+                    while(count < companies){
+                       var vbd = new vbDetail.company_name(report.Rows.Row[count].Header.ColData[0].value);
+                       count++;
+                    }
                 }
+
 
                // Save the entire JSON response to the DB
                /*db.collection('tester').save(report.Rows, function(err, recs){
