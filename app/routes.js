@@ -105,16 +105,31 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
                          for(var rowdata in report.Rows.Row[count].Rows.Row){
                             for(var coldata in report.Rows.Row[count].Rows.Row[rowdata].ColData){
 
+                               // save company name
                                var vbd = new vbDetail({
-                                    company_name: report.Rows.Row[count].Header.ColData[0].value,
-                                    rowsdata: [{vals: report.Rows.Row[count].Rows.Row[rowdata].ColData[coldata].value}]
+                                    company_name: report.Rows.Row[count].Header.ColData[0].value
 
                                 });
-                                console.log(vbd);
-                                    vbd.save(function(err){
-                                        if(err) console.log(err);
-                                    })
+
                                 }
+
+                                // save the row data per company
+                                vbd.rowsdata = ({vals:{
+                                                        date: report.Rows.Row[count].Rows.Row[rowdata].ColData[0].value,
+                                                        transaction_type: report.Rows.Row[count].Rows.Row[rowdata].ColData[1].value,
+                                                        transaction_num: report.Rows.Row[count].Rows.Row[rowdata].ColData[2].value,
+                                                        due_date: report.Rows.Row[count].Rows.Row[rowdata].ColData[3].value,
+                                                        amount: report.Rows.Row[count].Rows.Row[rowdata].ColData[4].value,
+                                                        open_balance: report.Rows.Row[count].Rows.Row[rowdata].ColData[5].value,
+                                                        balance: report.Rows.Row[count].Rows.Row[rowdata].ColData[6].value
+
+                                                     }
+                                                 })
+                                console.log(vbd);
+                                // Save the record to DB
+                                vbd.save(function(err){
+                                    if(err) console.log(err);
+                                })
                             }
 
 
