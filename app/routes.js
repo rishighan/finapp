@@ -89,18 +89,17 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
 
                // Save the response selectively.
                var companies = report.Rows.Row.length-1,
-                   count     = 0,
-                   valArr = [], val ={}
+                   count     = 0;
 
                 res.render('result.jade', {
                     importStatus: "Companies:"+ companies,
-                    importError: ""
+                    importError: "Error message"+ err
                 })
 
                 //test
                 for(var row in report["Rows"]["Row"]){
                     while(count < companies){
-                        //console.log(report.Rows.Row[count].Header.ColData[0].value);
+
                          // save the rows corresponding to each client
                          for(var rowdata in report.Rows.Row[count].Rows.Row){
                             for(var coldata in report.Rows.Row[count].Rows.Row[rowdata].ColData){
@@ -110,8 +109,7 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
                                     company_name: report.Rows.Row[count].Header.ColData[0].value
 
                                 });
-
-                                }
+                            }
 
                                 // save the row data per company
                                 vbd.rowsdata = ({vals:{
@@ -131,29 +129,13 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
                                     if(err) console.log(err);
                                 })
                             }
-
-
-
                        count++;
                     }
-
-
                 }
 
 
-               // Save the entire JSON response to the DB
-               /*db.collection('tester').save(report.Rows, function(err, recs){
-                    if(err) throw err;
-                    console.log("Saved the JSON response from the API.");
-                    res.render('result.jade',{
-                        importStatus: "Successfully wrote JSON to the database.",
-                        importError: err
-                    })
-               })*/
 
-
-
-            })
+        })
 
         })
 
