@@ -11,9 +11,7 @@ var mongoose = require('mongoose');
 module.exports = mongoose.model('vbDetail', {
 
     company_name: String,
-    rowsdata:[{
-        value: mongoose.Schema.Types.Mixed
-    }],
+    rowsdata: [{vals:String}],
 
     meta_rows: [{
         identifier: String,
@@ -21,5 +19,6 @@ module.exports = mongoose.model('vbDetail', {
         processing_amount :Date,
         notes: String
     }]
+
 
 })

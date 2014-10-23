@@ -89,7 +89,8 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
 
                // Save the response selectively.
                var companies = report.Rows.Row.length-1,
-                   count     = 0;
+                   count     = 0,
+                   valArr = [], val ={}
 
                 res.render('result.jade', {
                     importStatus: "Companies:"+ companies,
@@ -103,18 +104,20 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
                          // save the rows corresponding to each client
                          for(var rowdata in report.Rows.Row[count].Rows.Row){
                             for(var coldata in report.Rows.Row[count].Rows.Row[rowdata].ColData){
+
                                var vbd = new vbDetail({
                                     company_name: report.Rows.Row[count].Header.ColData[0].value,
-                                    rowsdata: report.Rows.Row[count].Rows.Row[rowdata].ColData[coldata].value
+                                    rowsdata: [{vals: report.Rows.Row[count].Rows.Row[rowdata].ColData[coldata].value}]
 
                                 });
+                                console.log(vbd);
+                                    vbd.save(function(err){
+                                        if(err) console.log(err);
+                                    })
                                 }
                             }
 
 
-                        vbd.save(function(err){
-                            if(err) console.log(err);
-                        })
 
                        count++;
                     }
