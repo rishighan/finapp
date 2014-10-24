@@ -11,6 +11,7 @@
 var finapp = angular.module('finapp', []);
 
 function mainController($scope, $http){
+    $scope.formData = {};
 
  $http.get('/api/vbdetail')
       .success(function(data){

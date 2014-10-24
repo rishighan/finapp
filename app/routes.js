@@ -107,8 +107,7 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
                                // save company name
                                var vbd = new vbDetail({
                                     company_name: report.Rows.Row[count].Header.ColData[0].value
-
-                                });
+                               });
                             }
 
                                 // save the row data per company

@@ -21,6 +21,4 @@ module.exports = mongoose.model('vbDetail', {
         processing_amount :Date,
         notes: String
     }]
-
-
 })

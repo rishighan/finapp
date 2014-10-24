@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="finapp">
 <head>
     <title>Finance App</title>
-    <script type="text/javascript" src=""></script>
+    <script type="text/javascript" src="angular.min.js" ></script>
+    <script type="text/javascript" src="js/core.js"></script>
 </head>
-<body>
-
+<body ngc-controller="mainController">
+    <div class="container">
+    {{data}}
+    </div>
 </body>
 </html>
