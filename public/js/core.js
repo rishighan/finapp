@@ -13,7 +13,7 @@ var finapp = angular.module('finapp', []);
 function mainController($scope, $http){
     $scope.formData = {};
 
- $http.get('/api/vbdetail')
+ $http.get('/vendorbalancedetail')
       .success(function(data){
           $scope.vbdetail = data;
           console.log(data);
