@@ -1,0 +1,45 @@
+extends site_layout
+
+block mainContent
+  h1!= reportname
+  h2!= daterange
+
+  p
+    button(type="button", class="btn btn-info clearfix")= "Sync with Quickbooks"
+    button(type="button", class="btn btn-info" action="/vbdetail/write")= "Save all JSON to DB"
+    button(type="button", class="btn btn-warning")= "Wipe and re-import"
+  table.table.table-stripped
+    tr
+      each column in columns
+        each col in column
+          td
+            h5!= col["ColTitle"]
+      td
+        h5!= "Unique Identifier"
+      td
+        h5!= "Notes"
+      td
+        h5!= "Processing Amount"
+        h5!= "Processing Date"
+
+    each cell, idx in rowsperclient.Row
+      if idx < rowsperclient.Row.length-1
+        tr
+          td(colspan=7 class="info")
+            h4= rowsperclient.Row[idx].Header.ColData[0].value
+
+      if rowsperclient.Row[idx].Rows
+        each value, key in rowsperclient.Row[idx].Rows.Row
+          tr
+            each colValue, key2 in rowsperclient.Row[idx].Rows.Row[key].Rows.Row[0].ColData
+              td
+                h5= rowsperclient.Row[idx].Rows.Row[key].Rows.Row[0].ColData[key2].value
+
+      each summary, key3 in rowsperclient.Row[idx].Summary
+        each col, key4 in summary
+          td.success
+            h5= rowsperclient.Row[idx].Summary.ColData[key4].value
+
+
+
+

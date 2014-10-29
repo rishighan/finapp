@@ -132,8 +132,6 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
                     }
                 }
 
-
-
         })
 
         })
@@ -178,11 +176,31 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
 
         })
 
+        app.get('/customer-balance-detail', function (req, res) {
+            qbo.reportCustomerBalanceDetail({
+
+            }, function (err, report) {
+                if (err) {
+                  res.status(400).send({error: err.message});
+                  return;
+                }
+                var templateData = getDataObject('Report Detail', report);
+                res.render('customer_balance_detail.jade', templateData);
+            });
+        });
+
     })
 
+}
 
 
-
-
-
+function getDataObject(title, report) {
+  return {
+    title: title,
+    reportname: report["Header"]['ReportName'],
+    daterange: "From:" + report["Header"]["StartPeriod"] + " to: " + report["Header"]["EndPeriod"],
+    alldata: report,
+    columns: report["Columns"],
+    rowsperclient: report["Rows"]
+  };
 }
