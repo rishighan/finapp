@@ -143,7 +143,7 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
                 date_macro: 'This Month-to-date',
                 appaid: 'Unpaid'
             }, function(_, report) {
-
+                // getDataObject('Report Detail', report, 'vbd');
                 //console.log(report)
                 res.render('vendorbalancedetail.jade', {
                     title: "Report Detail",
@@ -163,7 +163,7 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
                 sort_order: 'descend',
                 account_type: 'Bank'
             }, function(_, report) {
-                console.log(report);
+                // console.log(report);
                 res.render('profitandlossdetail.jade', {
                     title: "Profit and Loss Detail",
                     reportname: report["Header"]["ReportName"],
@@ -184,23 +184,95 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
                   res.status(400).send({error: err.message});
                   return;
                 }
-                var templateData = getDataObject('Report Detail', report);
-                res.render('customer_balance_detail.jade', templateData);
+
+                var tables = getTable(report.Rows);
+
+                res.render('customer_balance_detail.jade', {
+                    title: "Report Detail",
+                    reportname: report["Header"]['ReportName'],
+                    daterange: "From:" + report["Header"]["StartPeriod"] + " to: " + report["Header"]["EndPeriod"],
+                    alldata: report,
+                    columns: report["Columns"],
+                    rowsperclient: tables
+                });
             });
+        });
+
+        app.get('/balance-sheet', function (req, res) {
+          qbo.reportBalanceSheet({
+
+          }, function (err, report) {
+            if (err) {
+              res.status(400).send({error: err.message});
+              return;
+            }
+
+            getDataObject('Report Detail', report, 'balance-sheet');
+            var tables = getTable(report.Rows);
+          });
         });
 
     })
 
 }
 
-
-function getDataObject(title, report) {
-  return {
-    title: title,
-    reportname: report["Header"]['ReportName'],
-    daterange: "From:" + report["Header"]["StartPeriod"] + " to: " + report["Header"]["EndPeriod"],
-    alldata: report,
-    columns: report["Columns"],
-    rowsperclient: report["Rows"]
+function getTable (rows, table) {
+  var i, z, currentRow;
+  var row = rows.Row;
+  var iLen = row.length;
+  var table = table || {
+    title: '',
+    rows: [],
+    summary: [],
+    table: null
   };
+
+  var tables = [];
+
+  for (i=0; i<iLen; i++) {
+    currentRow = row[i];
+    if (currentRow.Header && currentRow.Rows) {
+      table.title = currentRow.Header.ColData[0];
+      table.table = getTable(currentRow.Rows, table.table);
+
+      if (currentRow.Rows.Row && currentRow.Rows.Row.length > 0 && currentRow.Rows.Row[0].ColData) {
+        zLen = currentRow.Rows.Row.length;
+        for (z=0; z<zLen; z++) {
+          var rowData = currentRow.Rows.Row[z].ColData;
+          table.rows.push(rowData);
+        }
+      }
+
+      if (currentRow.Summary && currentRow.Summary.ColData) {
+        table.summary = currentRow.Summary.ColData;
+      }
+    }
+
+    tables.push(JSON.parse(JSON.stringify(table)));
+    table = {
+       title: '',
+      rows: [],
+      summary: [],
+      table: null
+    };
+  }
+
+  return tables;
+}
+
+
+function getDataObject(title, report, fileName) {
+  var i;
+  var rows = report['Rows'];
+  var leng = rows.length;
+
+  var jsonRows = JSON.stringify(report);
+  var fs = require('fs');
+  fs.writeFile('./' + fileName + '.json', jsonRows, function (err) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('saved json file!');
+    }
+  });
 }
