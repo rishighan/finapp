@@ -1,0 +1,47 @@
+extends site_layout
+
+block mainContent
+  mixin printTable(tables)
+    for t in tables
+      h2= t["title"]["value"]
+      if t["rows"]
+        if t["rows"].length > 0
+          table.table.table-stripped
+            thead
+              tr
+                each column in columns
+                  each col in column
+                    th
+                      h5!= col["ColTitle"]
+                each customColumn in customColumns
+                  th
+                    h5!= customColumn
+            tbody
+              for row in t["rows"]
+                tr
+                  for cell in row
+                    td
+                      h5= cell.value
+                  for customColumn in customColumns
+                    td
+                      h5= "asdf"
+            tfoot
+              tr
+                for summaryCell in t["summary"]
+                  th.success
+                    h5= summaryCell.value
+      br
+
+      if t["table"]
+        mixin printTable(t["table"])
+
+  h1!= reportName
+  h2!= dateRange
+
+  p
+    button(type="button", class="btn btn-info clearfix")= "Sync with Quickbooks"
+    button(type="button", class="btn btn-info" action="/vbdetail/write")= "Save all JSON to DB"
+    button(type="button", class="btn btn-warning")= "Wipe and re-import"
+
+  div(ng-controller="#{angularController}")
+    mixin printTable(tables)

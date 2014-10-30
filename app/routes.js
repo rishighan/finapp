@@ -185,16 +185,9 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
                   return;
                 }
 
-                var tables = getTable(report.Rows);
-
-                res.render('customer_balance_detail.jade', {
-                    title: "Report Detail",
-                    reportname: report["Header"]['ReportName'],
-                    daterange: "From:" + report["Header"]["StartPeriod"] + " to: " + report["Header"]["EndPeriod"],
-                    alldata: report,
-                    columns: report["Columns"],
-                    rowsperclient: tables
-                });
+                var customColumns = ['Unique Identifier', 'Notes', 'Processing Amount', 'Processing Date'];
+                var dataSource = getDataSourceForJadeFile('Customer Balance Detail', report, customColumns, 'CustomerBalanceDetailController');
+                res.render('report_template.jade', dataSource);
             });
         });
 
@@ -207,8 +200,9 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
               return;
             }
 
-            getDataObject('Report Detail', report, 'balance-sheet');
-            var tables = getTable(report.Rows);
+            var customColumns = ['Unique Identifier', 'Notes', 'Processing Amount', 'Processing Date'];
+            var dataSource = getDataSourceForJadeFile('Balance Sheet', report, customColumns, 'BalanceSheetController');
+            res.render('report_template.jade', dataSource);
           });
         });
 
@@ -260,19 +254,49 @@ function getTable (rows, table) {
   return tables;
 }
 
+function getDataSourceForJadeFile (reportTitle, report, customColumns, angularController) {
+  var tables = [];
+  var _reportTitle = '';
+  var reportName = '';
+  var dateRange = '';
+  var allData = null;
+  var columns = [];
+  var _customColumns = [];
 
-function getDataObject(title, report, fileName) {
-  var i;
-  var rows = report['Rows'];
-  var leng = rows.length;
+  if (report) {
+    tables = getTable(report.Rows);
+    _reportTitle = reportTitle;
+    dateRange = report['Header']['StartPeriod'] + 'to: ' + report['Header']['EndPeriod'];
+    allData = report;
+    columns = report['Columns'];
+    reportName = report["Header"]["ReportName"];
+    _customColumns = customColumns;
+  }
 
-  var jsonRows = JSON.stringify(report);
-  var fs = require('fs');
-  fs.writeFile('./' + fileName + '.json', jsonRows, function (err) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log('saved json file!');
-    }
-  });
+  return {
+    title: _reportTitle,
+    reportName: reportName,
+    dateRange: dateRange,
+    columns: columns,
+    tables: tables,
+    customColumns: _customColumns,
+    angularController: angularController
+  };
 }
+
+
+// function getDataObject(title, report, fileName) {
+//   var i;
+//   var rows = report['Rows'];
+//   var leng = rows.length;
+
+//   var jsonRows = JSON.stringify(report);
+//   var fs = require('fs');
+//   fs.writeFile('./' + fileName + '.json', jsonRows, function (err) {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       console.log('saved json file!');
+//     }
+//   });
+// }
