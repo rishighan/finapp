@@ -27,7 +27,7 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
         var postBody = {
             url: QuickBooks.REQUEST_TOKEN_URL,
             oauth: {
-                callback: 'http://104.131.31.135:' + port + '/callback/',
+                callback: 'http://localhost:' + port + '/callback/',
                 consumer_key: creds.consumerKey,
                 consumer_secret: creds.consumerSecret
             }
@@ -176,24 +176,11 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
 
         })
 
-        app.get('/customer-balance-detail', function (req, res) {
-            qbo.reportCustomerBalanceDetail({
-
-            }, function (err, report) {
-                if (err) {
-                  res.status(400).send({error: err.message});
-                  return;
-                }
-
-                var customColumns = ['Unique Identifier', 'Notes', 'Processing Amount', 'Processing Date'];
-                var dataSource = getDataSourceForJadeFile('Customer Balance Detail', report, customColumns, 'CustomerBalanceDetailController');
-                res.render('report_template.jade', dataSource);
-            });
-        });
-
-        app.get('/balance-sheet', function (req, res) {
-          qbo.reportBalanceSheet({
-
+        app.post('/data/profit-loss-detail', function (req, res) {
+          qbo.reportProfitAndLossDetail({
+            // date_macro: 'This Month-to-date',
+            // sort_order: 'descend',
+            // account_type: 'Bank'
           }, function (err, report) {
             if (err) {
               res.status(400).send({error: err.message});
@@ -201,60 +188,101 @@ module.exports = function(app, port, QuickBooks, request, qs, express, db) {
             }
 
             var customColumns = ['Unique Identifier', 'Notes', 'Processing Amount', 'Processing Date'];
-            var dataSource = getDataSourceForJadeFile('Balance Sheet', report, customColumns, 'BalanceSheetController');
-            res.render('report_template.jade', dataSource);
+            var dataSource = getDataSourceForJadeFile('Profit And Loss Detail', report, customColumns);
+            res.status(200).send({data: dataSource});
           });
         });
+
+        app.get('/profit-loss-detail', function (req, res) {
+          // if (err) {
+          //   res.status(400).send({error: err.message});
+          //   return;
+          // }
+
+          res.render('report_template_secondary.jade', {angularController: 'ProfitLossDetailController'});
+        });
+
+        // app.get('/customer-balance-detail', function (req, res) {
+        //     qbo.reportCustomerBalanceDetail({
+
+        //     }, function (err, report) {
+        //         if (err) {
+        //           res.status(400).send({error: err.message});
+        //           return;
+        //         }
+
+        //         var customColumns = ['Unique Identifier', 'Notes', 'Processing Amount', 'Processing Date'];
+        //         var dataSource = getDataSourceForJadeFile('Customer Balance Detail', report, customColumns, 'CustomerBalanceDetailController');
+        //         res.render('report_template.jade', dataSource);
+        //     });
+        // });
+
+        // app.get('/balance-sheet', function (req, res) {
+        //   qbo.reportBalanceSheet({
+
+        //   }, function (err, report) {
+        //     if (err) {
+        //       res.status(400).send({error: err.message});
+        //       return;
+        //     }
+
+        //     var customColumns = ['Unique Identifier', 'Notes', 'Processing Amount', 'Processing Date'];
+        //     var dataSource = getDataSourceForJadeFile('Balance Sheet', report, customColumns, 'BalanceSheetController');
+        //     res.render('report_template.jade', dataSource);
+        //   });
+        // });
 
     })
 
 }
 
-function getTable (rows, table) {
+var _tables = [];
+
+function getTable2(rows) {
   var i, z, currentRow;
   var row = rows.Row;
-  var iLen = row.length;
-  var table = table || {
-    title: '',
-    rows: [],
-    summary: [],
-    table: null
-  };
-
-  var tables = [];
+  var iLen = row && row.length ? row.length : 0;
+  var table = null;
 
   for (i=0; i<iLen; i++) {
+    table = {
+      title: '',
+      rows: [],
+      summary: []
+    };
+
     currentRow = row[i];
-    if (currentRow.Header && currentRow.Rows) {
+
+    if (currentRow.Header) {
       table.title = currentRow.Header.ColData[0];
-      table.table = getTable(currentRow.Rows, table.table);
+    } 
 
-      if (currentRow.Rows.Row && currentRow.Rows.Row.length > 0 && currentRow.Rows.Row[0].ColData) {
-        zLen = currentRow.Rows.Row.length;
-        for (z=0; z<zLen; z++) {
-          var rowData = currentRow.Rows.Row[z].ColData;
-          table.rows.push(rowData);
-        }
-      }
-
-      if (currentRow.Summary && currentRow.Summary.ColData) {
-        table.summary = currentRow.Summary.ColData;
+    if (currentRow.Rows && currentRow.Rows.Row && currentRow.Rows.Row.length > 0 && currentRow.Rows.Row[0].ColData) {
+      zLen = currentRow.Rows.Row.length;
+      for (z=0; z<zLen; z++) {
+        var rowData = currentRow.Rows.Row[z].ColData;
+        table.rows.push(rowData);
       }
     }
 
-    tables.push(JSON.parse(JSON.stringify(table)));
-    table = {
-       title: '',
-      rows: [],
-      summary: [],
-      table: null
-    };
+    if (currentRow.Summary && currentRow.Summary.ColData) {
+      table.summary = currentRow.Summary.ColData;
+    }
+
+    if (table.rows.length > 0 && table.summary.length > 0) {
+      _tables.push(table);
+    }
+
+    if (currentRow.Header && currentRow.Rows) {
+      getTable2(currentRow.Rows);
+    }
   }
 
-  return tables;
+  return _tables;
+
 }
 
-function getDataSourceForJadeFile (reportTitle, report, customColumns, angularController) {
+function getDataSourceForJadeFile (reportTitle, report, customColumns) {
   var tables = [];
   var _reportTitle = '';
   var reportName = '';
@@ -264,7 +292,7 @@ function getDataSourceForJadeFile (reportTitle, report, customColumns, angularCo
   var _customColumns = [];
 
   if (report) {
-    tables = getTable(report.Rows);
+    tables = getTable2(report.Rows);
     _reportTitle = reportTitle;
     dateRange = report['Header']['StartPeriod'] + 'to: ' + report['Header']['EndPeriod'];
     allData = report;
@@ -279,8 +307,7 @@ function getDataSourceForJadeFile (reportTitle, report, customColumns, angularCo
     dateRange: dateRange,
     columns: columns,
     tables: tables,
-    customColumns: _customColumns,
-    angularController: angularController
+    customColumns: _customColumns
   };
 }
 

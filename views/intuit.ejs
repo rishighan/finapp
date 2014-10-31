@@ -8,7 +8,7 @@
   <script>
     intuit.ipp.anywhere.setup({
       menuProxy: '',
-      grantUrl: 'http://104.131.31.135:' + <%= port %> + '/requestToken'
+      grantUrl: 'http://localhost:' + <%= port %> + '/requestToken'
     });
   </script>
 <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
@@ -35,6 +35,12 @@
       <li>
         <a href="/balance-sheet">
           Balance Sheet
+        </a>
+      </li>
+
+      <li>
+        <a href="/profit-loss-detail">
+          Profit and Loss Detail
         </a>
       </li>
     </ul>

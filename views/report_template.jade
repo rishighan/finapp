@@ -32,9 +32,6 @@ block mainContent
                     h5= summaryCell.value
       br
 
-      if t["table"]
-        mixin printTable(t["table"])
-
   h1!= reportName
   h2!= dateRange
 
@@ -43,5 +40,5 @@ block mainContent
     button(type="button", class="btn btn-info" action="/vbdetail/write")= "Save all JSON to DB"
     button(type="button", class="btn btn-warning")= "Wipe and re-import"
 
-  div(ng-controller="#{angularController}")
+  div(ng-controller="CustomerBalanceDetailController", ng-init="data= #{JSON.stringify(tables)}")
     mixin printTable(tables)
