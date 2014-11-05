@@ -8,25 +8,29 @@ block mainContent
 
     p
       button(type="button", class="btn btn-info clearfix")= "Sync with Quickbooks"
-      button(type="button", class="btn btn-info" action="/vbdetail/write")= "Save all JSON to DB"
+      button(type="button", class="btn btn-info", ng-click="saveAll(data.tables)")= "Save all JSON to DB"
       button(type="button", class="btn btn-warning")= "Wipe and re-import"
 
-    div(ng-repeat="t in data.tables")
-      h2 {{t.title.value}}
-      table.table.table-stripped
-        thead
-          tr
-            th(ng-repeat="column in data.columns.Column")
-              h5 {{column.ColTitle}}
-            th(ng-repeat="customColumn in data.customColumns")
-              h5 {{customColumn}}
-        tbody
-          tr(ng-repeat="row in t.rows")
-            td(ng-repeat="cell in row")
-              h5 {{cell.value}}
-            td(ng-repeat="customColumn in data.customColumns")
-              h5 "Something"
-        tfoot
-          tr
-            th.success(ng-repeat="summaryCell in t.summary")
-              h5 {{summaryCell.value}}
+    br
+
+    div.panel.panel-default(ng-repeat="t in data.tables")
+      div.panel-body
+        h2 {{t.title.value}}
+        button.btn.btn-info(type="button", ng-click="save(t)") Save To DB
+        table.table.table-stripped
+          thead
+            tr
+              th(ng-repeat="column in data.columns.Column")
+                h5 {{column.ColTitle}}
+              th(ng-repeat="customColumn in data.customColumns")
+                h5 {{customColumn}}
+          tbody
+            tr(ng-repeat="row in t.rows")
+              td(ng-repeat="cell in row")
+                {{cell.value}}
+          tfoot
+            tr
+              th.success(ng-repeat="summaryCell in t.summary")
+                h5 {{summaryCell.value}}
+        br
+        br
