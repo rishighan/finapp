@@ -1,48 +1,28 @@
-angular.module('finapp').controller('ProfitLossDetailController', function ($scope, $http) {
+angular.module('finapp').controller('ProfitLossDetailController', function ($scope, $http, Utility) {
   console.log('logging from ProfitLossDetailController');
   $scope.data = null;
 
   $scope.saveAll = function saveAll (tables) {
-    console.log($scope.data.tables[0].rows[0]);
-    // var postRequest = $http({
-    //   method: 'POST',
-    //   url: '/profit-loss-detail',
-    //   data: {
-    //     tables: $scope.data.tables,
-    //     columns: $scope.data.columns.Column
-    //   }
-    // });
+    var tablesConverted = Utility.getDataToSendToServer($scope.data, $scope.grids);
+    var postRequest = $http({
+      method: 'POST',
+      url: '/profit-loss-detail',
+      data: {
+        tables: tablesConverted,
+        columns: $scope.columns,
+        customColumns: $scope.customColumns
+      }
+    });
 
-    // postRequest.then(
-    //   function success (response) {
-    //     console.log(response);
-    //   },
-    //   function fail (response) {
-    //     console.log(response);
-    //   }
-    // );
+    postRequest.then(
+      function success (response) {
+        console.log(response);
+      },
+      function fail (response) {
+        console.log(response);
+      }
+    );
   };
-
-  // $scope.save = function saveTable (table) {
-  //   console.log('table was passed by');
-  //   console.log(table);
-  //   console.log('%s was saved', table.title.value);
-
-  //   // var request = $http({
-  //   //   method: 'POST',
-  //   //   url: '/',
-  //   //   data: $scope.data.tables
-  //   // });
-
-  //   // request.then(
-  //   //   function success (response) {
-
-  //   //   },
-  //   //   function error (response) {
-
-  //   //   }
-  //   // );
-  // };
 
   var request = $http({
     method: 'POST',
@@ -51,35 +31,29 @@ angular.module('finapp').controller('ProfitLossDetailController', function ($sco
 
   request.then(
     function success (response) {
-      safeApply($scope, function () {
-        $scope.data = response.data.data;
-        $scope.customDataColumn = [];
-        console.log($scope.data.tables);
+      console.log('response.data.data.tables.length: ');
+      console.log(response.data.data.tables.length);
+      Utility.safeApply($scope, function () {
+        $scope.grids = [];
+        $scope.data = [];
+        $scope.dataConverted = [];
 
-        setTimeout(function () {
-          $('table').editableTableWidget();
+        $scope.columns = response.data.data.columns.Column;
+        $scope.customColumns = response.data.data.customColumns;
+        var tables = response.data.data.tables;
 
-          $('table td').on('change', function(evt, newValue) {
-            console.log('new value changed!!!');
-            console.log(newValue);
+        $scope.data = Utility.getDataBasedOnTableFormat($scope.columns, tables);
+        $scope.grids = Utility.getGridasedOnTableFormat('data', $scope.columns, tables);
 
-            console.log('evt:' );
-            console.log(evt);
-
-            $scope.$digest();
-          }); 
-        }, 2000);
-        
+        console.log('$scope.data: ');
+        console.log($scope.data);
+        console.log('$scope.grids: ');
+        console.log($scope.grids);
       });
     },
     function error (response) {
       console.log(response.error);
     }
   );
-
-
-
-  function safeApply(scope, fn) {
-    (scope.$$phase || scope.$root.$$phase) ? fn() : scope.$apply(fn);
-  }
+  
 });

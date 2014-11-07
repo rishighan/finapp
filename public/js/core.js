@@ -8,7 +8,7 @@
 // 5. Tall order
 
 
-var finapp = angular.module('finapp', []);
+var finapp = angular.module('finapp', ['ngGrid']);
 
 function mainController($scope, $http){
  //    $scope.formData = {};

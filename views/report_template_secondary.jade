@@ -13,24 +13,8 @@ block mainContent
 
     br
 
-    div.panel.panel-default(ng-repeat="t in data.tables")
-      div.panel-body
-        h2 {{t.title.value}}
-        button.btn.btn-info(type="button", ng-click="save(t)") Save To DB
-        table.table.table-stripped
-          thead
-            tr
-              th(ng-repeat="column in data.columns.Column")
-                h5 {{column.ColTitle}}
-              th(ng-repeat="customColumn in data.customColumns")
-                h5 {{customColumn}}
-          tbody
-            tr(ng-repeat="row in t.rows")
-              td(ng-repeat="cell in row")
-                {{cell.value}}
-          tfoot
-            tr
-              th.success(ng-repeat="summaryCell in t.summary")
-                h5 {{summaryCell.value}}
-        br
-        br
+    div(ng-repeat="g in grids")
+      h2 {{g.title.value}}
+      div.grid-style(ng-grid="g")
+    //-   br
+    //-   br
