@@ -1,0 +1,40 @@
+extends site_layout
+
+block mainContent
+  mixin printTable(tables)
+    for table in tables
+      tr
+        td(colspan=7 class="info")
+          if table["title"]
+            h4= table["title"]["value"]
+      for row in table["rows"]
+        tr
+          for cell in row
+            td
+              h5= cell.value
+      if table["table"]
+        mixin printTable(table["table"])
+
+  h1!= reportname
+  h2!= daterange
+
+  p
+    button(type="button", class="btn btn-info clearfix")= "Sync with Quickbooks"
+    button(type="button", class="btn btn-info" action="/vbdetail/write")= "Save all JSON to DB"
+    button(type="button", class="btn btn-warning")= "Wipe and re-import"
+  table.table.table-stripped
+    tr
+      each column in columns
+        each col in column
+          td
+            h5!= col["ColTitle"]
+      td
+        h5!= "Unique Identifier"
+      td
+        h5!= "Notes"
+      td
+        h5!= "Processing Amount"
+      td
+        h5!= "Processing Date"
+
+    mixin printTable(tables)

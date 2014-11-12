@@ -8,21 +8,19 @@
 // 5. Tall order
 
 
-var finapp = angular.module('finapp', []);
+var finapp = angular.module('finapp', ['ngGrid']);
 
 function mainController($scope, $http){
-    $scope.formData = {};
+ //    $scope.formData = {};
 
- $http.get('/vendorbalancedetail')
-      .success(function(data){
-          $scope.vbdetail = data;
-          console.log(data);
+ // $http.get('/vendorbalancedetail')
+ //      .success(function(data){
+ //          $scope.vbdetail = data;
+ //          console.log(data);
 
-      })
-      .error(function(data){
-          console.log("Error: " + data);
-      });
-
-
+ //      })
+ //      .error(function(data){
+ //          console.log("Error: " + data);
+ //      });
 
 }

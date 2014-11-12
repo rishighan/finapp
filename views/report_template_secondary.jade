@@ -1,0 +1,20 @@
+extends site_layout
+
+block mainContent
+  div(ng-controller="#{angularController}")
+
+    h1 {{data.reportName}}
+    h2 {{data.dateRange}}
+
+    p
+      button(type="button", class="btn btn-info clearfix")= "Sync with Quickbooks"
+      button(type="button", class="btn btn-info", ng-click="saveAll(data.tables)")= "Save all JSON to DB"
+      button(type="button", class="btn btn-warning")= "Wipe and re-import"
+
+    br
+
+    div(ng-repeat="g in grids")
+      h2 {{g.title.value}}
+      div.grid-style(ng-grid="g")
+    //-   br
+    //-   br
