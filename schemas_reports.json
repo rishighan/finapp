@@ -1,0 +1,93 @@
+Payroll Report
+row{
+    department{
+        employee{
+            firstname
+            lastname
+            title
+            startdate
+            current_salary
+            new_salary
+            annual_bonus
+        }
+    }
+    //for the monthly allocations
+    columns[
+        {
+            value:
+            value:
+            value:
+        },
+        {
+            value:
+            value:
+            value:
+        },
+         {
+            value:
+            value:
+            value:
+        }]
+}
+
+
+
+Budget vs Actual Report
+
+rows{
+    [{income
+        [{rowheader},
+        Coldata{
+            colvalue1,
+            colvalue2,
+            colvalue3,
+            }
+        ]
+    },
+    {costofgoods
+        [{rowheader},
+        Coldata{
+            colvalue1,
+            colvalue2,
+            colvalue3,
+        }]
+    },
+    {expenses
+        [{rowheader},
+        Coldata{
+            colvalue1,
+            colvalue2,
+            colvalue3,
+        }]
+    },
+    {otherincome
+        [{rowheader},
+        Coldata{
+            colvalue1,
+            colvalue2,
+            colvalue3,
+        }]
+    },
+    {otherexpenses
+        [{rowheader},
+        Coldata{
+            colvalue1,
+            colvalue2,
+            colvalue3,
+        }]
+    }]
+
+}
+
+
+Open Purchase Orders Report
+
+rows{
+    type
+    date
+    Name
+    Num
+    Amount
+    openbalance
+
+}
